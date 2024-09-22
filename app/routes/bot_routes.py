@@ -5,7 +5,7 @@ bp = Blueprint('bot', __name__, url_prefix='/bot')
 
 
 @bp.route('/query', methods=['GET'])
-def run_bot():
+def run_bot(urls):
     print('calling run_bot')
     '''Api route to call bot
 
@@ -15,12 +15,14 @@ def run_bot():
     Returns:
         dict: problems for user if successfuly, else error message
     '''
+    if not urls:
+        return jsonify({'error': 'No urls provided'})
 
-    urls = [
-            "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
-            "https://research.facebook.com/publications/flexiraft-flexible-quorums-with-raft/",
-            "https://www.foundationdb.org/files/fdb-paper.pdf"
-    ]
+    # urls = [
+    #         "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+    #         "https://research.facebook.com/publications/flexiraft-flexible-quorums-with-raft/",
+    #         "https://www.foundationdb.org/files/fdb-paper.pdf"
+    # ]
 
 
     response = []

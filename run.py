@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request
-from app.routes import bot_routes, calendar_routes
+from app.routes import bot_routes, calendar_routes, extension_routes
 from app.services import (URLProcessorAgent,
                             GoogleCalendar,
                             GoogleOAuth)
@@ -19,10 +19,12 @@ app.secret_key = 'your_secret_key'
 
 app.register_blueprint(bot_routes.bp)
 app.register_blueprint(calendar_routes.bp)
+app.register_blueprint(extension_routes.bp)
 
 
-CORS(app, resources={r"/*": {
-        "origins": allowed_origins,
-        "supports_credentials": True}}, supports_credentials=True)
+# CORS(app, resources={r"/*": {
+#         "origins": allowed_origins,
+#         "supports_credentials": True}}, supports_credentials=True)
+CORS(app)
 
 app.run(debug=True, port=8080, host="0.0.0.0")

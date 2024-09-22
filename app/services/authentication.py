@@ -5,7 +5,7 @@ import google_auth_oauthlib.flow
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 CLIENT_SECRETS_FILE = 'client_secrets.json'
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/calendar']
 
 # Class to handle OAuth2 authentication
 class GoogleOAuth:
