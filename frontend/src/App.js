@@ -6,17 +6,25 @@ const BACKEND_URL = 'http://localhost:8080';
 
 function App() {
   const [urls, setUrls] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const getBookmarksFromExtension = () => {
+    if (typeof window !== 'undefined') {
+      // Send a message to the content script to fetch bookmarks
+      window.postMessage({ action: 'getBookmarks' }, '*');
+    }
+  };
 
   let fetch_urls = () => {
-    return fetch(`${BACKEND_URL}/extension/receive_urls`, {
+    getBookmarksFromExtension(); // Call the function to fetch bookmarks from the extension
+
+    return fetch(`${BACKEND_URL}/extension/store_urls`, {
       method: 'POST', // Ensure the request is POST
       headers: {
         'Content-Type': 'application/json', // Set the request headers
       },
       body: JSON.stringify({
-        // Example data to send with the POST request
-        param1: 'value1',
-        param2: 'value2',
+        urls,
       }),
     })
       .then((response) => {
@@ -40,6 +48,26 @@ function App() {
       setUrls(urls); // Set the fetched URLs into state
     });
   }, []); // Empty array ensures this runs once when component mounts
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.action === 'bookmarksResponse') {
+        if (event.data.bookmarks) {
+          setUrls(event.data.bookmarks); // Keep updating state with received bookmarks
+          console.log('Bookmarks retrieved:', event.data.bookmarks); // Log them for debugging
+          setErrorMessage(null); // Clear error message if successful
+        } else {
+          setErrorMessage('Failed to retrieve bookmarks.');
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   return (
     <div className='App'>
